@@ -12,6 +12,7 @@
   body { background-image: radial-gradient(60% 35% at 50% -5%, rgba(var(--acr),.16), transparent); background-repeat: no-repeat; color: #fafafa; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; overflow-x: hidden; }
   body input, body select { font-size: 16px; }
   select { appearance: none; -webkit-appearance: none; color: #fafafa; }
+  input[type=date] { color-scheme: dark; }
   input[type=number] { -moz-appearance: textfield; }
   input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
   button { touch-action: manipulation; }
@@ -37,6 +38,7 @@
   .nb { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 10px 0 8px; font-size: 10px; font-weight: 800; color: #71717a; position: relative; }
   .nb.on { color: var(--ac); }
   .nb.on::before { content: ''; position: absolute; top: 0; width: 28px; height: 3px; border-radius: 0 0 4px 4px; background: var(--ac); box-shadow: 0 0 12px var(--ac); }
+  .nlk { position: absolute; top: 6px; left: calc(50% + 7px); font-size: 9px; font-style: normal; }
 
   /* Plates */
   .plate { flex: none; margin-right: 3px; border-radius: 5px; display: flex; align-items: center; justify-content: center;
@@ -70,7 +72,8 @@
   /* PR matrix + ranks */
   .mx { display: grid; grid-template-columns: 62px repeat(4, minmax(0,1fr)); gap: 6px; align-items: stretch; }
   .mh { text-align: center; font-size: 11px; font-weight: 900; color: #a1a1aa; padding-bottom: 2px; }
-  .ml { display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; gap: 2px; }
+  .ml { display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; gap: 2px; min-width: 0; }
+  .mname { font-size: 10px; font-weight: 800; line-height: 1.15; text-align: center; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; word-break: break-word; padding: 0 2px; }
   .mc { background: #09090b; border: 1px solid #27272a; border-radius: 12px; padding: 8px 2px; text-align: center; min-height: 54px; display: flex; flex-direction: column; justify-content: center; }
   .mc b { font-size: 15px; font-weight: 900; }
   .mc small { font-size: 9px; color: #71717a; }
@@ -80,8 +83,9 @@
   .rk-Intermediate { color: #60a5fa; border-color: rgba(96,165,250,.5); background: rgba(96,165,250,.12); }
   .rk-Advanced { color: #facc15; border-color: rgba(250,204,21,.55); background: rgba(250,204,21,.12); box-shadow: 0 0 12px rgba(250,204,21,.25); }
   .rk-flame { color: #fb923c; border-color: rgba(251,146,60,.5); background: rgba(251,146,60,.12); }
+  .rk-lv { color: var(--ac); border-color: rgba(var(--acr),.5); background: rgba(var(--acr),.12); }
 
-  /* Streak flame + heatmap */
+  /* Streak flame */
   .flameWrap { width: 84px; flex: none; filter: drop-shadow(0 0 12px rgba(251,146,60,.55)); }
   .flameWrap svg { width: 100%; height: auto; display: block; }
   .flameWrap.t0 { filter: grayscale(1) opacity(.35); }
@@ -94,12 +98,33 @@
   .t0 .fl-o, .t0 .fl-i { animation: none; }
   @keyframes flick { 0%,100% { transform: scale(1,1) rotate(-1.5deg); } 30% { transform: scale(1.05,.96) rotate(1.5deg); } 60% { transform: scale(.96,1.06) rotate(-.5deg); } }
   @keyframes flick2 { 0%,100% { transform: scale(1,1) rotate(1deg); } 50% { transform: scale(.92,1.1) rotate(-1.5deg); } }
-  .hm { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
-  .hc { aspect-ratio: 1; border-radius: 8px; background: #18181b; border: 1px solid #27272a; }
-  .hc.on { background: var(--ac); border-color: var(--ac); box-shadow: 0 0 10px rgba(var(--acr),.55); }
-  .hc.today { outline: 2px solid rgba(250,250,250,.45); outline-offset: 1px; }
-  .hc.fut { opacity: .25; }
-  .hmh { text-align: center; font-size: 10px; font-weight: 800; color: #52525b; }
+
+  /* Streak calendar */
+  .cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+  .hmh { text-align: center; font-size: 10px; font-weight: 800; color: #71717a; }
+  .cd { position: relative; aspect-ratio: 1; border-radius: 12px; background: #09090b; border: 1px solid #2f2f35; color: #a1a1aa; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+  .cd.on { background: var(--ac); border-color: var(--ac); color: var(--acd); box-shadow: 0 0 12px rgba(var(--acr),.5); }
+  .cd.sk::after { content: '🔥'; position: absolute; top: -7px; right: -3px; font-size: 11px; }
+  .cd.today { outline: 2px solid rgba(250,250,250,.6); outline-offset: 1px; }
+  .cd.sel { box-shadow: 0 0 0 2px #fff; }
+
+  /* Streak badges */
+  .bcell { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; padding: 6px 2px; }
+  .bw { display: block; width: 100%; max-width: 64px; margin: 0 auto; }
+  .bsvg { width: 100%; height: auto; display: block; }
+  .bw.on .bsvg { filter: drop-shadow(0 0 calc(4px + var(--k, 0) * 2.5px) var(--g, #fff)); }
+  .bsvg.lk { filter: grayscale(1) brightness(.55); opacity: .6; }
+  .bsvg.prism:not(.lk) { animation: hue 6s linear infinite; }
+  @keyframes hue { from { filter: hue-rotate(0deg) drop-shadow(0 0 22px rgba(244,114,182,.85)); } to { filter: hue-rotate(360deg) drop-shadow(0 0 22px rgba(244,114,182,.85)); } }
+  .spk { animation: tw 1.8s ease-in-out infinite; }
+  .spk.s2 { animation-delay: .6s; }
+  .spk.s3 { animation-delay: 1.2s; }
+  @keyframes tw { 0%,100% { opacity: .15; } 50% { opacity: 1; } }
+  .bname { font-size: 10px; font-weight: 800; line-height: 1.15; }
+  .bsub { font-size: 9px; color: #71717a; }
+  .lockb { position: absolute; right: -2px; bottom: -2px; font-size: 14px; }
+  .bdgpop { animation: bpop .6s cubic-bezier(.2,1.4,.5,1) both; }
+  @keyframes bpop { from { opacity: 0; transform: scale(.6) translateY(20px); } to { opacity: 1; transform: none; } }
 
   /* Switch + theme swatches */
   .sw { width: 48px; height: 28px; border-radius: 999px; background: #3f3f46; position: relative; flex: none; transition: background .2s; }
@@ -122,17 +147,20 @@
 
   <!-- HEADER -->
   <header class="flex items-center justify-between gap-3 mb-4">
-    <div class="flex items-center gap-2.5 min-w-0">
+    <div class="flex items-center gap-2.5 min-w-0 flex-1" onclick="setTab(4)" style="cursor:pointer">
       <div class="flex-none w-10 h-10 rounded-xl flex items-center justify-center text-xl" style="background:rgba(var(--acr),.1);border:1px solid rgba(var(--acr),.3)">🏋️</div>
       <div class="min-w-0">
-        <h1 class="text-xl font-black tracking-tight leading-none">Barbell<span class="txa">Forge</span></h1>
-        <p class="text-[11px] text-zinc-500 mt-1 truncate">Train. Track. Rank up.</p>
+        <h1 class="text-xl font-black tracking-tight leading-none truncate">Barbell<span class="txa">Forge</span></h1>
+        <div class="flex items-center gap-2 mt-1.5">
+          <span id="hdrLv" class="flex-none text-[11px] font-black txa whitespace-nowrap">LV 1</span>
+          <div class="flex-none h-1 w-14 rounded-full bg-zinc-800 overflow-hidden"><div id="hdrBar" class="h-full bga" style="width:0%;transition:width .6s"></div></div>
+        </div>
       </div>
     </div>
-    <button id="badge" onclick="openPaywall('upgrade')" class="flex-none text-xs font-bold px-3 py-2 rounded-full border"></button>
+    <button id="badge" onclick="openPaywall('upgrade')" class="flex-none text-xs font-bold px-3 py-2 rounded-full border whitespace-nowrap"></button>
   </header>
 
-  <!-- ============ TAB 0: PLATES ============ -->
+  <!-- ============ TAB 0: PLATES (free) ============ -->
   <section id="v0" class="space-y-3">
     <div class="card p-4">
       <div class="flex items-center justify-between gap-3 mb-2">
@@ -187,18 +215,19 @@
           <button onclick="tmReset()" class="text-xs font-bold text-zinc-400 border border-zinc-700 rounded-full py-2">Reset</button>
         </div>
       </div>
+      <div id="tmOpts" class="flex justify-center gap-2 mt-4"></div>
     </div>
   </section>
 
-  <!-- ============ TAB 1: WORKOUT ============ -->
+  <!-- ============ TAB 1: WORKOUT (premium) ============ -->
   <section id="v1" class="hidden"><div id="wkBody" class="space-y-3"></div></section>
 
-  <!-- ============ TAB 2: PROGRESS ============ -->
+  <!-- ============ TAB 2: PROGRESS (premium) ============ -->
   <section id="v2" class="hidden">
     <div id="pgEmpty" class="card p-6 text-center" style="display:none">
       <div class="text-5xl mb-3">📈</div>
       <h2 class="text-xl font-black mb-1">No data yet</h2>
-      <p class="text-sm text-zinc-400 mb-5">Finish a workout and your volume and strength trends will appear here.</p>
+      <p class="text-sm text-zinc-400 mb-5">Finish a workout or log a PR and your volume and strength trends will appear here.</p>
       <button class="btn-ac w-full" onclick="setTab(1)">Go to Workout</button>
     </div>
     <div id="pgMain" class="space-y-3" style="display:none">
@@ -213,19 +242,22 @@
           <div id="pgNone" class="absolute inset-0 items-center justify-center text-center text-sm text-zinc-500 px-6" style="display:none"></div>
         </div>
         <div id="pgStats" class="grid grid-cols-3 gap-2 mt-3"></div>
-        <p class="text-[11px] text-zinc-600 mt-3 leading-snug">Volume = weight × reps of completed working and drop sets (warm-ups excluded), accumulated across all exercises. The 1RM line follows the exercise selected above.</p>
+        <p class="text-[11px] text-zinc-600 mt-3 leading-snug">Volume = weight × reps of completed working and drop sets from workouts (warm-ups and manually logged PRs excluded), accumulated across all exercises. The 1RM line follows the exercise selected above.</p>
       </div>
     </div>
   </section>
 
-  <!-- ============ TAB 3: PR LOG ============ -->
+  <!-- ============ TAB 3: PR LOG (premium) ============ -->
   <section id="v3" class="hidden"><div id="prBody" class="space-y-3"></div></section>
 
-  <!-- ============ TAB 4: PROFILE ============ -->
+  <!-- ============ TAB 4: PROFILE (premium) ============ -->
   <section id="v4" class="hidden">
     <div class="space-y-3">
       <div id="pfHead"></div>
+      <div id="pfLevel"></div>
       <div id="pfStreak"></div>
+      <div id="pfCal"></div>
+      <div id="pfBadge"></div>
       <div id="pfSet"></div>
       <div id="pfTheme"></div>
       <div id="pfData"></div>
@@ -246,7 +278,7 @@
   <button onclick="tmReset()" class="w-9 h-9 rounded-full bg-zinc-800 text-zinc-300 font-bold" aria-label="Cancel rest timer">✕</button>
 </div>
 
-<!-- EXERCISE PICKER SHEET -->
+<!-- EXERCISE PICKER SHEET (workout) -->
 <div id="sheetBg" onclick="closePicker()" class="hidden fixed inset-0 z-30 bg-black/70"></div>
 <div id="sheet" class="sheet fixed left-0 right-0 bottom-0 z-40 max-w-md mx-auto card flex flex-col" style="border-radius:20px 20px 0 0;height:80vh;height:80dvh;padding-bottom:max(1rem, env(safe-area-inset-bottom))">
   <div class="p-5 pb-3">
@@ -257,6 +289,39 @@
   <div id="exList" class="flex-1 overflow-y-auto overscroll-contain px-5 pb-4 space-y-2"></div>
 </div>
 
+<!-- ADD PR SHEET (PR log) -->
+<div id="prBg" onclick="closePrSheet()" class="hidden fixed inset-0 z-30 bg-black/70"></div>
+<div id="prSheet" class="sheet fixed left-0 right-0 bottom-0 z-40 max-w-md mx-auto card overflow-y-auto overscroll-contain" style="border-radius:20px 20px 0 0;max-height:92vh;max-height:92dvh;padding:20px 20px max(1.25rem, env(safe-area-inset-bottom))">
+  <div class="w-10 h-1 bg-zinc-700 rounded-full mx-auto mb-4"></div>
+  <div class="flex items-center justify-between gap-3 mb-4">
+    <h3 class="text-lg font-black">Log a PR</h3>
+    <div id="segPr" class="seg w-32"></div>
+  </div>
+  <p class="lbl mb-2">Exercise</p>
+  <input id="prEx" type="text" list="exNames" placeholder="Pick or type any exercise" autocomplete="off" maxlength="40" oninput="prPreview()" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-3.5 font-bold outline-none focus:border-green-400 mb-2">
+  <datalist id="exNames"></datalist>
+  <div id="prChips" class="grid grid-cols-4 gap-2 mb-4"></div>
+  <div class="grid grid-cols-3 gap-2 mb-3">
+    <input id="prW" type="number" inputmode="decimal" placeholder="Weight" oninput="prPreview()" class="col-span-2 min-w-0 bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-3.5 text-lg font-bold outline-none focus:border-green-400">
+    <input id="prR" type="number" inputmode="numeric" placeholder="Reps" oninput="prPreview()" class="min-w-0 bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-3.5 text-lg font-bold outline-none focus:border-green-400">
+  </div>
+  <p class="lbl mb-2">Date</p>
+  <input id="prD" type="date" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-3.5 font-bold outline-none focus:border-green-400 mb-3">
+  <div class="tile py-2.5 text-center mb-4"><div class="text-[11px] text-zinc-500">Estimated 1RM</div><div id="prEst" class="text-2xl font-black txa">—</div></div>
+  <button onclick="saveManualPR()" class="btn-ac w-full">Save PR</button>
+  <p class="text-[11px] text-zinc-600 text-center mt-3 leading-snug">Manually logged PRs count toward your PR matrix and progress charts, but not toward streaks or XP.</p>
+</div>
+
+<!-- WORKOUT COMPLETE / XP -->
+<div id="xp" class="fixed inset-0 z-[56] items-center justify-center p-6" style="display:none;background:radial-gradient(70% 45% at 50% 40%,rgba(var(--acr),.25),rgba(0,0,0,.92))">
+  <div id="xpBody" class="card w-full max-w-xs p-6 text-center bdgpop"></div>
+</div>
+
+<!-- STREAK BADGE UNLOCK -->
+<div id="bdg" onclick="closeBadge()" class="fixed inset-0 z-[55] items-center justify-center p-6" style="display:none;background:radial-gradient(70% 45% at 50% 40%,rgba(var(--acr),.25),rgba(0,0,0,.92))">
+  <div id="bdgBody" onclick="event.stopPropagation()" class="card w-full max-w-xs p-6 text-center bdgpop"></div>
+</div>
+
 <!-- WHOP PAYWALL -->
 <div id="paywall" class="hidden fixed inset-0 z-50 overflow-y-auto" style="background:radial-gradient(80% 50% at 50% 0%,#052e16 0%,#030303 65%)">
   <div class="min-h-full max-w-md mx-auto px-6 py-10 flex flex-col items-center justify-center text-center">
@@ -264,10 +329,11 @@
     <h2 class="text-3xl font-black mb-2">🔓 Unlock Elite Features</h2>
     <p id="pwMsg" class="text-zinc-400 text-sm mb-6"></p>
     <ul class="w-full space-y-2.5 mb-8 text-left">
-      <li class="flex items-center gap-3 bg-white/5 border border-white/10 rounded-2xl p-3.5"><span class="text-xl">♾️</span><span class="font-semibold text-sm">Unlimited plate calculations, every day</span></li>
-      <li class="flex items-center gap-3 bg-white/5 border border-white/10 rounded-2xl p-3.5"><span class="text-xl">🎨</span><span class="font-semibold text-sm">All premium accent themes</span></li>
-      <li class="flex items-center gap-3 bg-white/5 border border-white/10 rounded-2xl p-3.5"><span class="text-xl">⚡</span><span class="font-semibold text-sm">Early access to every new Elite feature</span></li>
-      <li class="flex items-center gap-3 bg-white/5 border border-white/10 rounded-2xl p-3.5"><span class="text-xl">💚</span><span class="font-semibold text-sm">Support an indie, lifter-built app</span></li>
+      <li class="flex items-center gap-3 bg-white/5 border border-white/10 rounded-2xl p-3.5"><span class="text-xl">🏋️</span><span class="font-semibold text-sm">Full workout tracker with sets, warm-ups and drop sets</span></li>
+      <li class="flex items-center gap-3 bg-white/5 border border-white/10 rounded-2xl p-3.5"><span class="text-xl">📈</span><span class="font-semibold text-sm">Progress charts for volume and strength</span></li>
+      <li class="flex items-center gap-3 bg-white/5 border border-white/10 rounded-2xl p-3.5"><span class="text-xl">🏆</span><span class="font-semibold text-sm">PR log with your own exercises and strength tiers</span></li>
+      <li class="flex items-center gap-3 bg-white/5 border border-white/10 rounded-2xl p-3.5"><span class="text-xl">🔥</span><span class="font-semibold text-sm">Streaks, badges, XP and levels</span></li>
+      <li class="flex items-center gap-3 bg-white/5 border border-white/10 rounded-2xl p-3.5"><span class="text-xl">🎨</span><span class="font-semibold text-sm">Premium themes and early access to new features</span></li>
     </ul>
     <button onclick="buy()" class="neon w-full bg-green-400 text-green-950 font-black text-lg rounded-2xl py-4">Upgrade to Premium - $5.99</button>
     <div class="w-full mt-10 pt-6 border-t border-white/10">
@@ -287,7 +353,7 @@
 
 <script>
 /* ================= CONFIG ================= */
-const CFG = { free: 3, url: 'https://whop.com/checkout/plan_ApiKusIZi0ItS', pass: 'LIFT2026' };
+const CFG = { url: 'https://whop.com/checkout/plan_ApiKusIZi0ItS', pass: 'LIFT2026' };
 const CHART_SRC = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js';
 
 const SETS = {
@@ -336,6 +402,25 @@ const STD = {
   f: { 'Squat': [1.0, 1.5],   'Bench Press': [0.6, 1.0],  'Deadlift': [1.25, 1.75], 'Overhead Press': [0.4, 0.65] }
 };
 
+/* Streak badges: d = days in a row, c = [light, main, dark] gradient colors. Each one looks better than the last. */
+const BADGES = [
+  { d: 3,   l: '3 days',   n: 'Spark',            t: 'Bronze',    i: '🔥', c: ['#fcd9a8', '#cd7f32', '#6b3b12'] },
+  { d: 7,   l: '1 week',   n: 'Week Warrior',     t: 'Silver',    i: '⚔️', c: ['#ffffff', '#cbd5e1', '#64748b'] },
+  { d: 14,  l: '2 weeks',  n: 'Iron Habit',       t: 'Gold',      i: '🏅', c: ['#fef08a', '#eab308', '#92400e'] },
+  { d: 30,  l: '1 month',  n: 'Monthly Beast',    t: 'Platinum',  i: '💎', c: ['#cffafe', '#22d3ee', '#155e75'] },
+  { d: 60,  l: '2 months', n: 'Unbreakable',      t: 'Emerald',   i: '🛡️', c: ['#a7f3d0', '#10b981', '#064e3b'] },
+  { d: 90,  l: '3 months', n: 'Quarter Champion', t: 'Amethyst',  i: '👑', c: ['#ddd6fe', '#8b5cf6', '#4c1d95'] },
+  { d: 180, l: '6 months', n: 'Half-Year Legend', t: 'Ruby',      i: '🐉', c: ['#fecdd3', '#f43f5e', '#881337'] },
+  { d: 365, l: '1 year',   n: 'Forged Eternal',   t: 'Prismatic', i: '⚡', c: ['#fde047', '#f472b6', '#60a5fa'], x: true }
+];
+
+/* XP + levels */
+const XP_WORKOUT = 25;   // bonus for finishing a workout
+const XP_PR = 50;        // bonus per new estimated-1RM PR
+const XP_BADGE = 100;    // bonus per streak badge
+const MAX_LEVEL = 100;
+const LV_TITLES = [[1, 'Rookie'], [5, 'Lifter'], [10, 'Athlete'], [20, 'Warrior'], [30, 'Elite'], [50, 'Champion'], [75, 'Legend']];
+
 /* Themes: onyx green is free, the rest are Premium */
 const THEMES = {
   onyx:    { n: 'Onyx Green', ac: '#4ade80', d: '#052e16', rgb: '74,222,128',  free: true },
@@ -366,7 +451,6 @@ const fmtW = v => fmt(Math.round(v * 2) / 2);
 const abbr = v => v >= 1000 ? (Math.round(v / 100) / 10) + 'k' : String(Math.round(v));
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const pad = n => String(n).padStart(2, '0');
-const today = () => new Date().toDateString();
 const dayKey = d => { d = new Date(d); return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); };
 const dnum = k => { const [a, b, c] = k.split('-').map(Number); return Date.UTC(a, b - 1, c) / 864e5; };
 const shortDate = d => new Date(d).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
@@ -384,17 +468,17 @@ const store = {
 };
 const isPrem = () => store.get('isPremium', false) === true;
 const logs = () => store.get('bf_logs', []);
+const realLogs = () => logs().filter(w => !w.m);   // real workouts only (manual PR entries have m:1)
 const saveLogs = l => store.set('bf_logs', l);
-function usage() {
-  const o = store.get('bf_usage', null);
-  return (o && o.d === today() && Array.isArray(o.keys)) ? o : { d: today(), keys: [] };
-}
 
 /* ================= STATE ================= */
 const DEF = { unit: 'lb', bar: 0, sex: 'm', bw: 0, rest: 90, auto: true, snd: true, vib: true, theme: 'onyx', name: '', tab: 0 };
 const C = Object.assign({}, DEF, store.get('bf_cfg', {}));
 const saveC = () => store.set('bf_cfg', C);
-const S = { ses: store.get('bf_session', null), pgEx: '', range: 90, q: '' };
+const S = {
+  ses: store.get('bf_session', null), pgEx: '', range: 90, q: '', pendBadge: null, baseXP: 0, prU: 'lb',
+  cal: { y: new Date().getFullYear(), m: new Date().getMonth() }, calSel: ''
+};
 
 let toastTimer;
 function toast(msg) {
@@ -424,6 +508,70 @@ function migrate() {
   store.set('bf_mig2', true);
 }
 
+/* ================= XP + LEVELS ================= */
+/* XP for one set. Heavier weight and more reps both earn more.
+   Warm-ups pay 30%, drop sets 80%, the big four lifts pay x1.25, and heavy low-rep sets get a x1.15 bonus. */
+function setXP(name, w, r, t, u) {
+  r = Math.min(Math.max(parseInt(r) || 0, 0), 30);
+  if (!r) return 0;
+  const kg = Math.max(0, toKg(parseFloat(w) || 0, u));
+  const base = 3 + 0.8 * r + 1.1 * Math.sqrt(kg * r);
+  const heavy = (kg > 0 && r <= 5) ? 1.15 : 1;
+  const main = MAIN.some(m => m.n === name) ? 1.25 : 1;
+  const mult = t === 'W' ? 0.3 : t === 'D' ? 0.8 : 1;
+  return Math.max(1, Math.round(base * heavy * main * mult));
+}
+const wSetXP = w => { let x = 0; w.ex.forEach(e => e.sets.forEach(s => { x += setXP(e.n, s.w, s.r, s.t, w.u); })); return x; };
+const wXP = w => w.xp != null ? w.xp : wSetXP(w);
+const totalXP = () => logs().reduce((a, w) => a + wXP(w), 0) + Object.keys(store.get('bf_badges', {})).length * XP_BADGE;
+
+/* XP needed to go from level l to l+1 */
+const need = l => Math.round(100 * Math.pow(l, 1.3));
+function levelInfo(xp) {
+  let l = 1, rem = Math.max(0, xp);
+  while (l < MAX_LEVEL && rem >= need(l)) { rem -= need(l); l++; }
+  return { lv: l, cur: l >= MAX_LEVEL ? 0 : rem, need: need(l), pct: l >= MAX_LEVEL ? 100 : rem / need(l) * 100, xp };
+}
+const lvTitle = l => { let t = LV_TITLES[0][1]; LV_TITLES.forEach(x => { if (l >= x[0]) t = x[1]; }); return t; };
+function hdrLevel() {
+  if (!isPrem()) { $('hdrLv').textContent = 'FREE PLAN'; $('hdrBar').style.width = '0%'; return; }
+  const L = levelInfo(totalXP());
+  $('hdrLv').textContent = 'LV ' + L.lv;
+  $('hdrBar').style.width = L.pct + '%';
+}
+
+function showXp(o) {
+  const up = o.after.lv > o.before.lv;
+  const lines = [['Sets completed', '+' + o.sets], ['Workout bonus', '+' + XP_WORKOUT]];
+  if (o.prs) lines.push(['🏆 ' + o.prs + ' new PR' + (o.prs > 1 ? 's' : ''), '+' + o.prBonus]);
+  if (o.badgeBonus) lines.push(['🏅 Badge unlocked', '+' + o.badgeBonus]);
+  $('xpBody').innerHTML = `<p class="lbl txa mb-2">Workout complete</p>
+    <div id="xpNum" class="text-5xl font-black tabular-nums">+0</div>
+    <div class="text-sm font-bold text-zinc-400 mb-4">XP earned</div>
+    <div class="space-y-1.5 mb-4 text-left">${lines.map(l => `<div class="flex justify-between text-sm"><span class="text-zinc-400">${l[0]}</span><b class="txa">${l[1]}</b></div>`).join('')}</div>
+    ${o.streak ? `<div class="text-sm font-bold text-orange-400 mb-3">🔥 ${o.streak} day streak</div>` : ''}
+    ${up ? `<div class="rk rk-lv mb-1" style="font-size:12px;padding:5px 12px">🎉 Level up! Lv ${o.before.lv} → Lv ${o.after.lv}</div><div class="text-sm font-bold mb-3">${lvTitle(o.after.lv)}</div>` : ''}
+    <div class="flex items-center justify-between text-[11px] font-bold text-zinc-500 mb-1"><span>Lv ${o.after.lv}</span><span>${o.after.lv >= MAX_LEVEL ? 'MAX' : o.after.cur + ' / ' + o.after.need + ' XP'}</span></div>
+    <div class="h-2.5 rounded-full bg-zinc-800 overflow-hidden"><div id="xpBar" class="h-full rounded-full bga" style="width:${up ? 0 : o.before.pct}%;transition:width 1s ease"></div></div>
+    <button class="btn-ac w-full mt-5" onclick="closeXp()">Continue</button>`;
+  $('xp').style.display = 'flex';
+  const card = $('xpBody'); card.classList.remove('bdgpop'); void card.offsetWidth; card.classList.add('bdgpop');
+  setTimeout(() => { const b = $('xpBar'); if (b) b.style.width = o.after.pct + '%'; }, 150);
+  const t0 = performance.now(), D = 800;
+  (function f(t) {
+    const p = Math.min(1, (t - t0) / D), n = $('xpNum');
+    if (n) n.textContent = '+' + Math.round(o.gain * p);
+    if (p < 1) requestAnimationFrame(f);
+  })(t0);
+  if (up) { try { navigator.vibrate && C.vib && navigator.vibrate([80, 50, 80, 50, 160]); } catch (e) {} }
+}
+function closeXp() {
+  $('xp').style.display = 'none';
+  hdrLevel();
+  if (C.tab === 4) pfRender();
+  if (S.pendBadge != null) { const k = S.pendBadge; S.pendBadge = null; setTimeout(() => showBadge(k), 250); }
+}
+
 /* ================= THEME ================= */
 function applyTheme(id) {
   const t = THEMES[id] || THEMES.onyx, r = document.documentElement.style;
@@ -434,9 +582,13 @@ const accent = () => getComputedStyle(document.documentElement).getPropertyValue
 /* ================= NAV / SEGMENTS ================= */
 function mountNav() {
   $('navIn').innerHTML = TABS.map((t, i) =>
-    `<button id="nb${i}" onclick="setTab(${i})" class="nb"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${t[1]}</svg><span>${t[0]}</span></button>`).join('');
+    `<button id="nb${i}" onclick="setTab(${i})" class="nb"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${t[1]}</svg><span>${t[0]}</span>${i ? `<i id="nl${i}" class="nlk">🔒</i>` : ''}</button>`).join('');
 }
+function refreshNav() { for (let i = 1; i < 5; i++) { const el = $('nl' + i); if (el) el.style.display = isPrem() ? 'none' : 'inline'; } }
+
+/* Plates (tab 0) is free. Every other tab needs Premium. */
 function setTab(n) {
+  if (n > 0 && !isPrem()) { openPaywall('tab', TABS[n][0]); return; }
   C.tab = n; saveC();
   for (let i = 0; i < 5; i++) { $('v' + i).classList.toggle('hidden', i !== n); $('nb' + i).classList.toggle('on', i === n); }
   window.scrollTo(0, 0);
@@ -462,19 +614,15 @@ function segSet(id, val) {
 /* ================= STATUS BADGE ================= */
 function refreshStatus() {
   const b = $('badge');
-  if (isPrem()) {
-    b.textContent = '👑 PREMIUM';
-    b.className = 'flex-none text-xs font-bold px-3 py-2 rounded-full border txa';
-    b.style.borderColor = 'rgba(var(--acr),.4)'; b.style.background = 'rgba(var(--acr),.1)';
-  } else {
-    const left = Math.max(0, CFG.free - usage().keys.length);
-    b.textContent = left + ' free left today';
-    b.style.borderColor = ''; b.style.background = '';
-    b.className = 'flex-none text-xs font-bold px-3 py-2 rounded-full border ' + (left ? 'border-zinc-700 bg-zinc-900 text-zinc-300' : 'border-red-500/50 bg-red-500/10 text-red-400');
-  }
+  b.textContent = isPrem() ? '👑 PREMIUM' : '👑 Upgrade';
+  b.className = 'flex-none text-xs font-bold px-3 py-2 rounded-full border whitespace-nowrap txa';
+  b.style.borderColor = 'rgba(var(--acr),.45)';
+  b.style.background = 'rgba(var(--acr),.1)';
+  refreshNav();
+  hdrLevel();
 }
 
-/* ================= PLATES TAB ================= */
+/* ================= PLATES TAB (free) ================= */
 function setUnit(u) {
   C.unit = u;
   if (C.bar >= BARS[u].length) C.bar = 0;
@@ -504,25 +652,15 @@ function nudge(d) {
 }
 
 let schedTimer;
-function sched() { clearTimeout(schedTimer); schedTimer = setTimeout(calc, 1000); }
+function sched() { clearTimeout(schedTimer); schedTimer = setTimeout(calc, 600); }
 
 function calc() {
   clearTimeout(schedTimer);
   const w = parseFloat($('inW').value);
   if (!(w > 0)) { clearPlates(); return; }
   const bar = BARS[C.unit][C.bar];
-  const key = w + '|' + C.unit + '|' + bar;
-  if (!isPrem()) {
-    const u = usage();
-    if (!u.keys.includes(key)) {
-      if (u.keys.length >= CFG.free) { openPaywall('calc'); return; }
-      u.keys.push(key);
-      store.set('bf_usage', u);
-    }
-  }
   drawPlates(w, bar);
   drawWarmups(w, bar);
-  refreshStatus();
 }
 function clearPlates() {
   $('sleeve').innerHTML = ''; $('chips').innerHTML = '';
@@ -570,7 +708,7 @@ function drawWarmups(w, bar) {
     + row('🎯', w, 'Work', '100%', true);
 }
 
-/* ---------- Rest timer (card + floating pill) ---------- */
+/* ---------- Rest timer (free; card + floating pill) ---------- */
 const RING = 326.73;
 const TM = { pre: C.rest, left: C.rest, end: 0, id: 0, run: false, ctx: null };
 
@@ -581,8 +719,12 @@ function tmRender() {
   $('tmBtn').textContent = TM.run ? '⏸' : '▶';
   $('tmPre').innerHTML = [[60, '60s'], [90, '90s'], [180, '3m']].map(([s, t]) =>
     `<button onclick="tmSet(${s})" class="chip ${s === TM.pre ? 'chip-on' : ''}">${t}</button>`).join('');
+  $('tmOpts').innerHTML =
+    `<button onclick="togOpt('snd')" class="chip ${C.snd ? 'chip-on' : ''}">🔔 Sound</button>` +
+    `<button onclick="togOpt('vib')" class="chip ${C.vib ? 'chip-on' : ''}">📳 Vibrate</button>`;
   flRender();
 }
+function togOpt(k) { C[k] = !C[k]; saveC(); tmRender(); if (C.tab === 4) pfSettings(); }
 function flRender() {
   const show = C.tab !== 0 && (TM.run || (TM.left > 0 && TM.left < TM.pre));
   $('fl').style.display = show ? 'flex' : 'none';
@@ -623,13 +765,13 @@ function alarm() {
   } catch (e) {}
 }
 
-/* ================= WORKOUT TAB ================= */
+/* ================= WORKOUT TAB (premium) ================= */
 const sesSave = () => store.set('bf_session', S.ses);
 const wVol = w => { let v = 0; w.ex.forEach(e => e.sets.forEach(s => { if (s.t !== 'W') v += s.w * s.r; })); return v; };
 const wSets = w => w.ex.reduce((a, e) => a + e.sets.length, 0);
 
 function lastPerf(name) {
-  const to = S.ses ? S.ses.u : C.unit, L = logs().slice().reverse();
+  const to = S.ses ? S.ses.u : C.unit, L = realLogs().slice().reverse();
   for (const w of L) {
     const e = w.ex.find(x => x.n === name);
     if (e && e.sets.length) return e.sets.map(s => ({ w: Math.round(conv(s.w, w.u, to) * 2) / 2, r: s.r, t: s.t }));
@@ -670,23 +812,40 @@ function cycTag(i, j) {
 }
 function setF(i, j, f, v) { S.ses.ex[i].sets[j][f] = v; sesSave(); wkStats(); }
 function togDone(i, j) {
-  const s = S.ses.ex[i].sets[j];
+  const e = S.ses.ex[i], s = e.sets[j];
   if (!s.d) {
     if (!(parseInt(s.r) > 0)) { toast('Enter your reps first'); return; }
     if (s.w === '' || isNaN(parseFloat(s.w))) s.w = '0';
     s.d = true;
+    toast('⚡ +' + setXP(e.n, s.w, s.r, s.t, S.ses.u) + ' XP');
     if (C.auto) tmStart(s.t === 'W' ? Math.min(60, C.rest) : C.rest);
   } else s.d = false;
   sesSave(); wkRender();
 }
 function wkStats() {
   if (!S.ses) return;
-  let sets = 0, vol = 0;
-  S.ses.ex.forEach(e => e.sets.forEach(s => { if (s.d) { sets++; if (s.t !== 'W') vol += (parseFloat(s.w) || 0) * (parseInt(s.r) || 0); } }));
+  let sets = 0, vol = 0, xp = 0;
+  S.ses.ex.forEach((e, i) => {
+    let ex = 0;
+    e.sets.forEach(s => {
+      if (!s.d) return;
+      sets++;
+      if (s.t !== 'W') vol += (parseFloat(s.w) || 0) * (parseInt(s.r) || 0);
+      const x = setXP(e.n, s.w, s.r, s.t, S.ses.u); xp += x; ex += x;
+    });
+    const el = $('exXp' + i); if (el) el.textContent = ex;
+  });
   const a = $('wkSets'), b = $('wkVol'), c = $('wkClock');
   if (a) a.textContent = sets;
   if (b) b.textContent = abbr(vol) + ' ' + S.ses.u;
   if (c) c.textContent = clk(Math.floor((Date.now() - S.ses.start) / 1000));
+  const xa = $('wkXp');
+  if (xa) {
+    const A = levelInfo(S.baseXP + xp), B = levelInfo(S.baseXP);
+    xa.textContent = '+' + xp;
+    $('wkXpBar').style.width = A.pct + '%';
+    $('wkXpNote').textContent = 'Lv ' + A.lv + (A.lv > B.lv ? ' · level up on finish 🎉' : '') + (A.lv < MAX_LEVEL ? ' · ' + (A.need - A.cur) + ' XP to next level' : ' · max level');
+  }
 }
 setInterval(() => { if (C.tab === 1 && S.ses) wkStats(); }, 1000);
 
@@ -700,30 +859,35 @@ function sesFinish() {
   if (!done.length) { toast('Complete at least one set first'); return; }
   const open = S.ses.ex.reduce((a, e) => a + e.sets.filter(s => !s.d).length, 0);
   if (open && !confirm(open + ' unfinished set' + (open > 1 ? 's' : '') + ' will be dropped. Finish anyway?')) return;
-  const L = logs(), before = streakInfo().cur;
+  const L = logs(), before = streakInfo().cur, xpBefore = totalXP();
   const w = { id: S.ses.start, date: new Date().toISOString(), dur: Math.floor((Date.now() - S.ses.start) / 1000), u: S.ses.u, ex: done };
   let hits = 0;
   done.forEach(e => { const prior = bestE1(L, e.n), cur = bestE1([w], e.n); if (prior > 0 && cur > prior + 1e-6) hits++; });
+  const setsXP = wSetXP(w), prBonus = hits * XP_PR;
+  w.xp = setsXP + XP_WORKOUT + prBonus;
   L.push(w); saveLogs(L);
   S.ses = null; store.del('bf_session');
   tmReset();
   const after = streakInfo().cur;
+  const fresh = syncBadges();
+  const xpAfter = totalXP();
+  S.pendBadge = fresh.length ? fresh[fresh.length - 1] : null;
   wkRender();
-  toast(hits ? '🏆 ' + hits + ' new PR' + (hits > 1 ? 's' : '') + '!' : after > before ? '🔥 ' + after + ' day streak!' : '✅ Workout saved');
+  showXp({ gain: xpAfter - xpBefore, sets: setsXP, prs: hits, prBonus, badgeBonus: fresh.length * XP_BADGE, streak: after > before ? after : 0, before: levelInfo(xpBefore), after: levelInfo(xpAfter) });
 }
 function delLog(id) {
   if (!confirm('Delete this workout from your history?')) return;
   saveLogs(logs().filter(w => w.id !== id));
-  wkRender(); toast('Workout deleted');
+  wkRender(); hdrLevel(); toast('Workout deleted');
 }
 
 function wkRender() {
-  const el = $('wkBody'), L = logs();
+  const el = $('wkBody'), L = realLogs();
   if (!S.ses) {
     let h = `<div class="card p-6 text-center">
       <div class="text-5xl mb-3">🏋️</div>
       <h2 class="text-xl font-black mb-1">Ready to train?</h2>
-      <p class="text-sm text-zinc-400 mb-5">Build a session, log every set, and watch your progress stack up.</p>
+      <p class="text-sm text-zinc-400 mb-5">Build a session, log every set, and earn XP to level up.</p>
       <button class="btn-ac w-full" onclick="sesStart()">Start Workout</button></div>`;
     if (L.length) {
       const recent = L.slice(-6).reverse();
@@ -733,18 +897,24 @@ function wkRender() {
             <div class="font-bold text-sm">${shortDate(w.date)}${w.dur ? ' · ' + Math.round(w.dur / 60) + ' min' : ''}</div>
             <div class="text-xs text-zinc-500 truncate">${w.ex.map(e => esc(e.n)).join(', ')}</div>
           </div>
-          <div class="text-right flex-none"><div class="text-sm font-black">${abbr(wVol(w))} ${w.u}</div><div class="text-[10px] text-zinc-500">${wSets(w)} sets</div></div>
+          <div class="text-right flex-none"><div class="text-sm font-black">${abbr(wVol(w))} ${w.u}</div><div class="text-[10px] text-zinc-500">${wSets(w)} sets · ${wXP(w)} XP</div></div>
           <button onclick="delLog(${w.id})" class="flex-none w-8 h-8 text-red-400 font-bold" aria-label="Delete workout">✕</button>
         </div>`).join('') + `</div>`;
     }
     el.innerHTML = h; return;
   }
+  S.baseXP = totalXP();
   const s = S.ses, u = s.u.toUpperCase();
   let h = `<div class="card p-4">
     <div class="grid grid-cols-3 gap-2 mb-3">
       <div class="tile py-2.5 text-center"><div class="text-[11px] text-zinc-500">Time</div><div id="wkClock" class="text-lg font-black tabular-nums">0:00</div></div>
       <div class="tile py-2.5 text-center"><div class="text-[11px] text-zinc-500">Sets done</div><div id="wkSets" class="text-lg font-black">0</div></div>
       <div class="tile py-2.5 text-center"><div class="text-[11px] text-zinc-500">Volume</div><div id="wkVol" class="text-lg font-black">0</div></div>
+    </div>
+    <div class="tile p-3 mb-3">
+      <div class="flex items-center justify-between text-xs"><span class="font-black txa">⚡ Session XP</span><b id="wkXp" class="font-black text-sm">+0</b></div>
+      <div class="h-1.5 rounded-full bg-zinc-800 overflow-hidden mt-2"><div id="wkXpBar" class="h-full rounded-full bga" style="width:0%;transition:width .4s"></div></div>
+      <div id="wkXpNote" class="text-[10px] text-zinc-500 mt-1.5"></div>
     </div>
     <div class="grid grid-cols-2 gap-2"><button class="btn-ac" style="padding:12px" onclick="sesFinish()">Finish</button><button class="btn-gh" onclick="sesDiscard()">Discard</button></div>
   </div>`;
@@ -753,7 +923,7 @@ function wkRender() {
     const lp = lastPerf(e.n); let wc = 0;
     h += `<div class="card p-3.5">
       <div class="flex items-center justify-between gap-3 mb-3">
-        <div class="min-w-0"><div class="font-black truncate">${esc(e.n)}</div><div class="text-[11px] txa font-bold">${esc(e.m)}</div></div>
+        <div class="min-w-0"><div class="font-black truncate">${esc(e.n)}</div><div class="text-[11px] txa font-bold">${esc(e.m)} · ⚡ <span id="exXp${i}">0</span> XP</div></div>
         <button onclick="delEx(${i})" class="flex-none w-9 h-9 rounded-xl bg-zinc-800 border border-zinc-700 text-zinc-400" aria-label="Remove exercise">✕</button>
       </div>
       <div class="srow shead"><span>Set</span><span>Prev</span><span>${u}</span><span>Reps</span><span>✓</span></div>`;
@@ -775,7 +945,7 @@ function wkRender() {
   el.innerHTML = h; wkStats();
 }
 
-/* ---------- Exercise picker ---------- */
+/* ---------- Exercise picker (workout) ---------- */
 function openPicker() {
   S.q = ''; $('exQ').value = ''; pickRender();
   $('sheetBg').classList.remove('hidden');
@@ -814,7 +984,7 @@ function withChart(ok, fail) {
   document.head.appendChild(s);
 }
 
-/* ================= PROGRESS TAB ================= */
+/* ================= PROGRESS TAB (premium) ================= */
 function setRange(v) { S.range = Number(v); segSet('segRange', S.range); pgRender(); }
 function setPgEx(v) { S.pgEx = v; pgRender(); }
 
@@ -822,12 +992,12 @@ function pgData() {
   const u = C.unit, cutoff = S.range ? Date.now() - S.range * 864e5 : 0;
   const ws = logs().slice().sort((a, b) => new Date(a.date) - new Date(b.date)).filter(w => new Date(w.date) >= cutoff);
   let cum = 0, best = 0;
-  const d = { labels: [], cum: [], e1: [], n: ws.length, best: 0 };
+  const d = { labels: [], cum: [], e1: [], pts: ws.length, n: ws.filter(w => !w.m).length, best: 0 };
   ws.forEach(w => {
     let vol = 0, top = 0;
     w.ex.forEach(e => e.sets.forEach(s => {
       if (s.t === 'W') return;
-      vol += conv(s.w, w.u, u) * s.r;
+      if (!w.m) vol += conv(s.w, w.u, u) * s.r;
       if (e.n === S.pgEx && s.r >= 1 && s.r <= 12) top = Math.max(top, conv(est(s.w, s.r), w.u, u));
     }));
     cum += vol; best = Math.max(best, top);
@@ -855,9 +1025,9 @@ function pgRender() {
     ['Volume', abbr(d.total || 0) + ' ' + u, 'text-white'],
     ['Best 1RM', d.best ? fmtW(d.best) + ' ' + u : '—', 'txa']
   ].map(t => `<div class="tile py-2.5 text-center"><div class="text-[11px] text-zinc-500">${t[0]}</div><div class="text-base font-black ${t[2]}">${t[1]}</div></div>`).join('');
-  none.style.display = d.n ? 'none' : 'flex';
-  none.textContent = 'No workouts in this range.';
-  if (!d.n) { if (CH.inst) { CH.inst.destroy(); CH.inst = null; } return; }
+  none.style.display = d.pts ? 'none' : 'flex';
+  none.textContent = 'No data in this range.';
+  if (!d.pts) { if (CH.inst) { CH.inst.destroy(); CH.inst = null; } return; }
   withChart(() => drawProg(d), () => { none.textContent = 'Chart could not load. Check your connection and reopen this tab.'; none.style.display = 'flex'; });
 }
 function drawProg(d) {
@@ -895,14 +1065,17 @@ function drawProg(d) {
   });
 }
 
-/* ================= PR LOG TAB ================= */
+/* ================= PR LOG TAB (premium) ================= */
+/* Registry for every exercise that has a logged working set (the big four always have a row). */
 function prMatrix() {
   const out = {};
-  MAIN.forEach(l => { out[l.n] = { 1: null, 3: null, 5: null, 10: null, e1: 0 }; });
+  const blank = () => ({ 1: null, 3: null, 5: null, 10: null, e1: 0, cnt: 0 });
+  MAIN.forEach(l => { out[l.n] = blank(); });
   logs().forEach(w => w.ex.forEach(e => {
-    const o = out[e.n]; if (!o) return;
     e.sets.forEach(s => {
       if (s.t === 'W' || !(s.r > 0)) return;
+      const o = out[e.n] || (out[e.n] = blank());
+      o.cnt++;
       const kg = toKg(s.w, w.u);
       [1, 3, 5, 10].forEach(n => { if (s.r >= n && (!o[n] || kg > o[n].kg)) o[n] = { kg, d: w.date }; });
       if (s.r <= 12) o.e1 = Math.max(o.e1, toKg(est(s.w, s.r), w.u));
@@ -921,20 +1094,23 @@ function tierFor(lift, e1) {
 }
 function prRender() {
   const M = prMatrix(), u = C.unit, now = Date.now();
-  let h = '';
+  const mainNames = MAIN.map(m => m.n);
+  const extras = Object.keys(M).filter(n => !mainNames.includes(n)).sort((a, b) => (M[b].cnt - M[a].cnt) || a.localeCompare(b));
+  let h = `<button class="btn-ac w-full" onclick="openPrSheet()">+ Add PR</button>`;
   if (!C.bw) h += `<div class="card p-4 flex items-center gap-3"><span class="text-2xl">⚖️</span><p class="flex-1 text-sm text-zinc-300">Add your bodyweight to unlock strength tiers.</p><button class="btn-gh flex-none" onclick="setTab(4)">Profile</button></div>`;
 
+  const cell = (c) => c ? `<div class="mc${now - new Date(c.d) < 6048e5 ? ' new' : ''}"><b>${fmtW(fromKg(c.kg, u))}</b><small>${shortDate(c.d)}</small></div>` : `<div class="mc"><b style="color:#3f3f46">—</b></div>`;
   h += `<div class="card p-4"><div class="flex items-center justify-between mb-3"><h2 class="lbl">PR matrix registry</h2><span class="text-[11px] font-black text-zinc-400 bg-zinc-900 border border-zinc-800 rounded-full px-2.5 py-1">${u.toUpperCase()}</span></div>
     <div class="mx"><span></span>${[1, 3, 5, 10].map(n => `<span class="mh">${n}RM</span>`).join('')}`;
   MAIN.forEach(l => {
     h += `<div class="ml"><span class="text-lg">${l.i}</span><b>${l.s}</b></div>`;
-    [1, 3, 5, 10].forEach(n => {
-      const c = M[l.n][n];
-      h += c ? `<div class="mc${now - new Date(c.d) < 6048e5 ? ' new' : ''}"><b>${fmtW(fromKg(c.kg, u))}</b><small>${shortDate(c.d)}</small></div>`
-             : `<div class="mc"><b style="color:#3f3f46">—</b></div>`;
-    });
+    [1, 3, 5, 10].forEach(n => { h += cell(M[l.n][n]); });
   });
-  h += `</div><p class="text-[11px] text-zinc-600 mt-3 leading-snug">Heaviest working weight lifted for at least that many reps. Highlighted cells were set in the last 7 days. Warm-ups never count.</p></div>`;
+  extras.forEach(n => {
+    h += `<div class="ml"><b class="mname">${esc(n)}</b></div>`;
+    [1, 3, 5, 10].forEach(k => { h += cell(M[n][k]); });
+  });
+  h += `</div><p class="text-[11px] text-zinc-600 mt-3 leading-snug">Heaviest working weight lifted for at least that many reps, for the big four and every other exercise you have logged. Highlighted cells were set in the last 7 days. Warm-ups never count.</p></div>`;
 
   MAIN.forEach(l => {
     const m = M[l.n], t = tierFor(l.n, m.e1);
@@ -945,17 +1121,87 @@ function prRender() {
       ${t ? `<div class="h-2 rounded-full bg-zinc-800 overflow-hidden mt-3"><div class="h-full rounded-full bga" style="width:${t.pct}%"></div></div><p class="text-[11px] text-zinc-500 mt-2">${t.next}</p>` : ''}</div>`;
   });
 
+  if (extras.length) {
+    h += `<div class="card p-4"><h2 class="lbl mb-2">Your exercises · best est. 1RM</h2>` + extras.map(n => {
+      const o = M[n];
+      return `<div class="flex items-center justify-between gap-3 py-2.5 border-b border-zinc-800/60 last:border-0"><div class="min-w-0 font-bold text-sm truncate">${esc(n)}</div><div class="flex-none text-sm font-black txa">${o.e1 ? fmtW(fromKg(o.e1, u)) + ' ' + u : '—'}</div></div>`;
+    }).join('') + `</div>`;
+  }
+
   const big3 = ['Squat', 'Bench Press', 'Deadlift'];
   if (big3.every(n => M[n].e1)) {
     const tot = big3.reduce((a, n) => a + M[n].e1, 0);
     h += `<div class="card p-4 text-center"><div class="lbl mb-1">Estimated total (SBD)</div><div class="text-4xl font-black txa">${fmtW(fromKg(tot, u))} <span class="text-lg text-zinc-400">${u}</span></div>${C.bw ? `<div class="text-xs text-zinc-500 mt-1">${(Math.round(tot / C.bw * 100) / 100)}× bodyweight</div>` : ''}</div>`;
   }
+
+  const man = logs().filter(w => w.m).slice(-8).reverse();
+  if (man.length) {
+    h += `<div class="card p-4"><h2 class="lbl mb-2">Manually logged PRs</h2>` + man.map(w => {
+      const e = w.ex[0], s = e.sets[0];
+      return `<div class="flex items-center gap-3 py-2.5 border-b border-zinc-800/60 last:border-0">
+        <div class="flex-1 min-w-0"><div class="font-bold text-sm truncate">${esc(e.n)}</div><div class="text-[11px] text-zinc-500">${shortDate(w.date)} · ${fmt(s.w)} ${w.u} × ${s.r}</div></div>
+        <div class="flex-none text-sm font-black txa">${fmt(est(s.w, s.r))} ${w.u}</div>
+        <button onclick="delPrEntry(${w.id})" class="flex-none w-8 h-8 text-red-400 font-bold" aria-label="Delete PR">✕</button></div>`;
+    }).join('') + `<p class="text-[11px] text-zinc-600 mt-2">The right-hand number is the estimated 1RM.</p></div>`;
+  }
   $('prBody').innerHTML = h;
 }
 
-/* ================= PROFILE TAB ================= */
+/* ---------- Add a PR for any exercise ---------- */
+function canon(n) {
+  const lc = n.toLowerCase();
+  const names = [...EXS.map(e => e[0]), ...logs().flatMap(w => w.ex.map(e => e.n))];
+  return names.find(x => x.toLowerCase() === lc) || n;
+}
+function openPrSheet(name) {
+  S.prU = C.unit;
+  $('prEx').value = name || ''; $('prW').value = ''; $('prR').value = '';
+  $('prD').value = dayKey(new Date()); $('prD').max = dayKey(new Date());
+  const names = [...new Set([...EXS.map(e => e[0]), ...logs().flatMap(w => w.ex.map(e => e.n))])];
+  $('exNames').innerHTML = names.map(n => `<option value="${esc(n)}"></option>`).join('');
+  $('prChips').innerHTML = MAIN.map(l => `<button onclick="prPick('${l.n}')" class="py-2.5 rounded-xl border border-zinc-700 text-xs font-bold text-zinc-300">${l.i}<br>${l.s}</button>`).join('');
+  segSet('segPr', S.prU); prPreview();
+  $('prBg').classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+  $('prSheet').scrollTop = 0;
+  requestAnimationFrame(() => $('prSheet').classList.add('open'));
+}
+function closePrSheet() {
+  $('prSheet').classList.remove('open');
+  $('prBg').classList.add('hidden');
+  document.body.style.overflow = '';
+}
+function prPick(n) { $('prEx').value = n; prPreview(); }
+function setPrUnit(u) { S.prU = u; segSet('segPr', u); prPreview(); }
+function prPreview() {
+  const w = parseFloat($('prW').value), r = parseInt($('prR').value) || 1;
+  $('prEst').textContent = w > 0 ? fmt(est(w, r)) + ' ' + S.prU : '—';
+}
+function saveManualPR() {
+  const raw = $('prEx').value.trim().slice(0, 40), w = parseFloat($('prW').value), r = parseInt($('prR').value) || 1;
+  const dv = $('prD').value || dayKey(new Date());
+  if (!raw) { toast('Pick or type an exercise'); return; }
+  if (!(w > 0)) { toast('Enter the weight you lifted'); return; }
+  if (r > 30) { toast('Reps look too high'); return; }
+  if (dv > dayKey(new Date())) { toast("Date can't be in the future"); return; }
+  const name = canon(raw), u = S.prU, [y, mo, d] = dv.split('-').map(Number);
+  const L = logs(), prior = bestE1(L, name);
+  L.push({ id: Date.now(), date: new Date(y, mo - 1, d, 12, 0, 0).toISOString(), dur: 0, u, m: 1, xp: 0, ex: [{ n: name, sets: [{ w, r, t: '' }] }] });
+  L.sort((a, b) => new Date(a.date) - new Date(b.date));
+  saveLogs(L);
+  closePrSheet(); prRender();
+  const cur = toKg(est(w, r), u);
+  toast(prior > 0 && cur <= prior + 1e-6 ? '✅ PR logged' : '🏆 New best: ' + name);
+}
+function delPrEntry(id) {
+  if (!confirm('Delete this logged PR?')) return;
+  saveLogs(logs().filter(w => w.id !== id));
+  prRender(); toast('PR deleted');
+}
+
+/* ================= PROFILE TAB (premium) ================= */
 function streakInfo() {
-  const L = logs(), days = [...new Set(L.map(w => dayKey(w.date)))].sort();
+  const L = realLogs(), days = [...new Set(L.map(w => dayKey(w.date)))].sort();
   if (!days.length) return { cur: 0, best: 0, total: 0, days: new Set() };
   const nums = days.map(dnum);
   let best = 1, run = 1;
@@ -967,32 +1213,49 @@ function streakInfo() {
   }
   return { cur, best, total: L.length, days: new Set(days) };
 }
-function pfRender() { pfHead(); pfStreak(); pfSettings(); pfThemes(); pfData(); }
+function pfRender() { syncBadges(); pfHead(); pfLevel(); pfStreak(); pfCal(); pfBadges(); pfSettings(); pfThemes(); pfData(); hdrLevel(); }
 
 function pfHead() {
-  const prem = isPrem(), left = Math.max(0, CFG.free - usage().keys.length);
   $('pfHead').innerHTML = `<div class="card p-4 flex items-center gap-4">
     <div class="avatar">${esc((C.name || 'L').trim().charAt(0).toUpperCase() || 'L')}</div>
     <div class="flex-1 min-w-0">
       <input type="text" maxlength="24" placeholder="Your name" value="${esc(C.name)}" oninput="C.name=this.value;saveC()" class="bg-transparent text-xl font-black outline-none w-full">
-      <p class="text-xs text-zinc-500 mt-0.5">${prem ? '👑 Premium member' : left + ' free calculation' + (left === 1 ? '' : 's') + ' left today'}</p>
+      <p class="text-xs text-zinc-500 mt-0.5">👑 Premium member</p>
     </div>
-    ${prem ? '' : `<button class="btn-ac flex-none" style="padding:10px 14px;font-size:13px" onclick="openPaywall('upgrade')">Upgrade</button>`}
   </div>`;
 }
+
+/* ---------- Level card ---------- */
+function pfLevel() {
+  const xp = totalXP(), L = levelInfo(xp), R = 2 * Math.PI * 42;
+  const nextT = LV_TITLES.find(t => t[0] > L.lv);
+  $('pfLevel').innerHTML = `<div class="card p-4">
+    <div class="flex items-center gap-4">
+      <div class="relative flex-none" style="width:96px;height:96px">
+        <svg viewBox="0 0 100 100" class="w-full h-full -rotate-90"><circle cx="50" cy="50" r="42" fill="none" stroke="#27272a" stroke-width="9"/>
+          <circle id="lvRing" cx="50" cy="50" r="42" fill="none" stroke="var(--ac)" stroke-width="9" stroke-linecap="round" stroke-dasharray="${R}" stroke-dashoffset="${R}" style="transition:stroke-dashoffset .9s ease;filter:drop-shadow(0 0 6px rgba(var(--acr),.7))"/></svg>
+        <div class="absolute inset-0 flex flex-col items-center justify-center"><span class="text-[10px] font-black tracking-widest text-zinc-500">LEVEL</span><span class="text-3xl font-black leading-none">${L.lv}</span></div>
+      </div>
+      <div class="flex-1 min-w-0">
+        <span class="rk rk-lv">${lvTitle(L.lv)}</span>
+        <div class="text-2xl font-black mt-1.5">${xp.toLocaleString()} <span class="text-sm text-zinc-400">XP</span></div>
+        <div class="text-xs text-zinc-500">${L.lv >= MAX_LEVEL ? 'Max level reached' : (L.need - L.cur).toLocaleString() + ' XP to Level ' + (L.lv + 1)}</div>
+      </div>
+    </div>
+    <div class="h-2 rounded-full bg-zinc-800 overflow-hidden mt-4"><div class="h-full rounded-full bga" style="width:${L.pct}%"></div></div>
+    <div class="flex justify-between text-[11px] text-zinc-500 mt-1"><span>${L.cur.toLocaleString()} XP</span><span>${L.lv >= MAX_LEVEL ? 'MAX' : L.need.toLocaleString() + ' XP'}</span></div>
+    ${nextT ? `<p class="text-[11px] text-zinc-500 mt-2">Next title: <b class="txa">${nextT[1]}</b> at Level ${nextT[0]}</p>` : ''}
+    <div class="tile p-3 mt-4 text-[11px] text-zinc-400 leading-relaxed"><b class="text-zinc-200">How XP works</b><br>Every completed set earns XP, and heavier weight and more reps earn more. Squat, Bench, Deadlift and OHP count ×1.25, heavy sets of 1-5 reps get a bonus, drop sets pay 80% and warm-ups 30%. Extras: +${XP_WORKOUT} per workout, +${XP_PR} per new PR, +${XP_BADGE} per streak badge.</div>
+  </div>`;
+  setTimeout(() => { const r = $('lvRing'); if (r) r.style.strokeDashoffset = R * (1 - L.pct / 100); }, 40);
+}
+
 function pfStreak() {
   const st = streakInfo(), cur = st.cur;
   const names = ['Cold', 'Warming up', 'On fire', 'Blazing', 'Inferno', 'Legendary'];
   const tier = cur >= 30 ? 5 : cur >= 14 ? 4 : cur >= 7 ? 3 : cur >= 3 ? 2 : cur >= 1 ? 1 : 0;
-  const next = [3, 7, 14, 30, 60, 100, 200, 365].find(m => m > cur) || cur;
+  const next = BADGES.map(b => b.d).find(m => m > cur) || cur;
   const prog = next ? Math.min(100, cur / next * 100) : 100;
-  const now = new Date(), dow = (now.getDay() + 6) % 7;
-  const base = new Date(now.getFullYear(), now.getMonth(), now.getDate() - dow - 28);
-  let cells = '';
-  for (let k = 0; k < 35; k++) {
-    const d = new Date(base.getFullYear(), base.getMonth(), base.getDate() + k), key = dayKey(d);
-    cells += `<div class="hc${st.days.has(key) ? ' on' : ''}${k > 28 + dow ? ' fut' : ''}${k === 28 + dow ? ' today' : ''}" title="${key}"></div>`;
-  }
   $('pfStreak').innerHTML = `<div class="card p-4">
     <div class="flex items-center gap-4">
       <div class="flameWrap t${tier}">${FLAME}</div>
@@ -1003,11 +1266,126 @@ function pfStreak() {
       </div>
     </div>
     <div class="h-2 rounded-full bg-zinc-800 overflow-hidden mt-4"><div class="h-full rounded-full bga" style="width:${prog}%"></div></div>
-    <p class="text-[11px] text-zinc-500 mt-2">${cur === 0 ? 'Finish a workout today to light your flame.' : (next - cur) + ' more day' + (next - cur === 1 ? '' : 's') + ' to the ' + next + '-day badge'}</p>
-    <div class="hm mt-4 mb-1.5">${['M', 'T', 'W', 'T', 'F', 'S', 'S'].map(x => `<span class="hmh">${x}</span>`).join('')}</div>
-    <div class="hm">${cells}</div>
+    <p class="text-[11px] text-zinc-500 mt-2">${cur === 0 ? 'Finish a workout today to light your flame.' : next > cur ? (next - cur) + ' more day' + (next - cur === 1 ? '' : 's') + ' to the ' + next + '-day badge' : 'Top badge reached 🏆'}</p>
   </div>`;
 }
+
+/* ---------- Streak calendar ---------- */
+function calNav(d) {
+  let { y, m } = S.cal; m += d;
+  if (m < 0) { m = 11; y--; }
+  if (m > 11) { m = 0; y++; }
+  const now = new Date();
+  if (y > now.getFullYear() || (y === now.getFullYear() && m > now.getMonth())) return;
+  S.cal = { y, m }; S.calSel = ''; pfCal();
+}
+function calPick(k) { S.calSel = S.calSel === k ? '' : k; pfCal(); }
+function pfCal() {
+  const st = streakInfo(), L = realLogs(), { y, m } = S.cal;
+  const first = new Date(y, m, 1), dim = new Date(y, m + 1, 0).getDate(), lead = (first.getDay() + 6) % 7;
+  const tk = dayKey(new Date()), now = new Date();
+  const atNow = y === now.getFullYear() && m === now.getMonth();
+  const inStreak = new Set();
+  if (st.cur > 0) {
+    const ds = [...st.days].sort(); let i = ds.length - 1; inStreak.add(ds[i]);
+    while (i > 0 && dnum(ds[i]) - dnum(ds[i - 1]) === 1) { i--; inStreak.add(ds[i]); }
+  }
+  const by = {};
+  L.forEach(w => { const k = dayKey(w.date); (by[k] = by[k] || []).push(w); });
+  let cells = '', n = 0;
+  for (let i = 0; i < lead; i++) cells += '<span></span>';
+  for (let d = 1; d <= dim; d++) {
+    const key = y + '-' + pad(m + 1) + '-' + pad(d), has = !!by[key], fut = key > tk;
+    if (has) n++;
+    cells += `<button class="cd${has ? ' on' : ''}${inStreak.has(key) ? ' sk' : ''}${key === tk ? ' today' : ''}${S.calSel === key ? ' sel' : ''}"${fut ? ' disabled style="opacity:.3"' : ''} onclick="calPick('${key}')" aria-label="${key}${has ? ', workout logged' : ''}">${d}</button>`;
+  }
+  let detail = '<p class="text-[11px] text-zinc-500 text-center mt-3">Tap a day to see what you trained.</p>';
+  if (S.calSel) {
+    const ws = by[S.calSel] || [];
+    const lab = new Date(S.calSel + 'T00:00:00').toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' });
+    detail = `<div class="tile p-3 mt-3"><div class="text-xs font-black txa mb-1.5">${lab}</div>` + (ws.length
+      ? ws.map(w => `<div class="flex items-center justify-between gap-3 py-1.5"><div class="min-w-0 text-xs text-zinc-300 truncate">${w.ex.map(e => esc(e.n)).join(', ')}</div><div class="flex-none text-[11px] text-zinc-500 text-right">${abbr(wVol(w))} ${w.u} · ${wXP(w)} XP</div></div>`).join('')
+      : '<div class="text-xs text-zinc-500">Rest day. No workouts logged.</div>') + '</div>';
+  }
+  $('pfCal').innerHTML = `<div class="card p-4">
+    <div class="flex items-center justify-between gap-3 mb-3">
+      <button class="btn-gh" style="padding:0;width:38px;height:38px;font-size:20px" onclick="calNav(-1)" aria-label="Previous month">‹</button>
+      <div class="text-center"><div class="font-black">${first.toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}</div><div class="text-[11px] text-zinc-500">${n} training day${n === 1 ? '' : 's'}</div></div>
+      <button class="btn-gh" style="padding:0;width:38px;height:38px;font-size:20px;${atNow ? 'opacity:.3' : ''}"${atNow ? ' disabled' : ''} onclick="calNav(1)" aria-label="Next month">›</button>
+    </div>
+    <div class="cal mb-1.5">${['M', 'T', 'W', 'T', 'F', 'S', 'S'].map(x => `<span class="hmh">${x}</span>`).join('')}</div>
+    <div class="cal">${cells}</div>
+    ${detail}
+    <p class="text-[11px] text-zinc-600 mt-3 leading-snug">Filled days are workouts. 🔥 marks the days in your current streak.</p>
+  </div>`;
+}
+
+/* ---------- Streak badges ---------- */
+function badgeSVG(b, id, locked) {
+  const k = BADGES.indexOf(b);
+  return `<svg viewBox="0 0 100 100" class="bsvg${locked ? ' lk' : ''}${b.x ? ' prism' : ''}"><defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${b.c[0]}"/><stop offset=".5" stop-color="${b.c[1]}"/><stop offset="1" stop-color="${b.c[2]}"/></linearGradient></defs>
+    <polygon points="50,4 90,27 90,73 50,96 10,73 10,27" fill="url(#${id})" stroke="rgba(255,255,255,.4)" stroke-width="2"/>
+    <polygon points="50,14 81,32 81,68 50,86 19,68 19,32" fill="rgba(0,0,0,.35)" stroke="rgba(255,255,255,.25)" stroke-width="1.5"/>
+    <text x="50" y="56" text-anchor="middle" font-size="28">${b.i}</text>
+    <text x="50" y="77" text-anchor="middle" font-size="11" font-weight="900" fill="#fff">${b.d} DAYS</text>
+    ${k >= 5 && !locked ? '<circle class="spk" cx="14" cy="22" r="2.2" fill="#fff"/><circle class="spk s2" cx="88" cy="40" r="1.8" fill="#fff"/><circle class="spk s3" cx="76" cy="10" r="2" fill="#fff"/>' : ''}</svg>`;
+}
+/* A badge is earned once your best streak ever reaches its length, and it is kept for good. */
+function syncBadges() {
+  const st = streakInfo(), E = store.get('bf_badges', {}), fresh = [];
+  BADGES.forEach((b, k) => { if (!E[b.d] && st.best >= b.d) { E[b.d] = new Date().toISOString(); fresh.push(k); } });
+  if (fresh.length) store.set('bf_badges', E);
+  return fresh;
+}
+function pfBadges() {
+  syncBadges();
+  const st = streakInfo(), E = store.get('bf_badges', {});
+  const got = BADGES.filter(b => E[b.d]).length;
+  const nb = BADGES.find(b => !E[b.d]);
+  let nextHTML;
+  if (nb) {
+    const left = Math.max(0, nb.d - st.cur);
+    nextHTML = `<div class="tile p-3 flex items-center gap-3 mb-4">
+      <span class="bw" style="width:46px;flex:none">${badgeSVG(nb, 'bgn', true)}</span>
+      <div class="flex-1 min-w-0">
+        <div class="text-[11px] text-zinc-500">Next badge</div>
+        <div class="font-black truncate">${nb.n} · ${nb.l}</div>
+        <div class="h-1.5 rounded-full bg-zinc-800 overflow-hidden mt-2"><div class="h-full rounded-full bga" style="width:${Math.min(100, st.cur / nb.d * 100)}%"></div></div>
+        <div class="text-[11px] text-zinc-500 mt-1">${left} more day${left === 1 ? '' : 's'} in a row</div>
+      </div></div>`;
+  } else {
+    nextHTML = `<div class="tile p-3 text-center text-sm font-bold txa mb-4">🏆 Every badge unlocked. Legendary.</div>`;
+  }
+  $('pfBadge').innerHTML = `<div class="card p-4">
+    <div class="flex items-center justify-between mb-3"><h2 class="lbl">Streak badges</h2><span class="text-[11px] font-black text-zinc-400 bg-zinc-900 border border-zinc-800 rounded-full px-2.5 py-1">${got} / ${BADGES.length}</span></div>
+    ${nextHTML}
+    <div class="grid grid-cols-4 gap-x-2 gap-y-3">${BADGES.map((b, k) => {
+      const on = !!E[b.d];
+      return `<button onclick="badgeTap(${k})" class="bcell" aria-label="${b.n}, ${b.l} streak, ${on ? 'unlocked' : 'locked'}">
+        <span class="relative" style="display:block;width:100%"><span class="bw ${on ? 'on' : ''}" style="--g:${b.c[1]};--k:${k}">${badgeSVG(b, 'bg' + k, !on)}</span>${on ? '' : '<span class="lockb">🔒</span>'}</span>
+        <b class="bname">${b.n}</b><span class="bsub">${b.l}</span></button>`;
+    }).join('')}</div>
+    <p class="text-[11px] text-zinc-600 mt-3 leading-snug">Train on consecutive days to earn badges. Once unlocked, a badge is yours for good, even if your streak breaks.</p>
+  </div>`;
+}
+function badgeTap(k) {
+  const b = BADGES[k], E = store.get('bf_badges', {});
+  if (E[b.d]) showBadge(k, E[b.d]);
+  else toast('🔒 Reach a ' + b.d + '-day streak to unlock ' + b.n);
+}
+function showBadge(k, date) {
+  const b = BADGES[k];
+  $('bdgBody').innerHTML = `<p class="lbl txa mb-4">${date ? 'Earned ' + shortDate(date) : '🎉 Badge unlocked!'}</p>
+    <div class="bw on mx-auto" style="max-width:170px;--g:${b.c[1]};--k:${k}">${badgeSVG(b, 'bgm', false)}</div>
+    <h3 class="text-2xl font-black mt-4">${b.n}</h3>
+    <p class="text-sm text-zinc-400 mt-1">${b.l} streak · ${b.t} tier</p>
+    <button class="btn-ac w-full mt-5" onclick="closeBadge()">${date ? 'Close' : 'Awesome'}</button>`;
+  $('bdg').style.display = 'flex';
+  const card = $('bdgBody'); card.classList.remove('bdgpop'); void card.offsetWidth; card.classList.add('bdgpop');
+  try { navigator.vibrate && C.vib && navigator.vibrate([60, 40, 60]); } catch (e) {}
+}
+function closeBadge() { $('bdg').style.display = 'none'; }
+
 function pfSettings() {
   const row = (label, ctl, hint) => `<div class="flex items-center justify-between gap-3"><div class="min-w-0"><div class="text-sm font-bold">${label}</div>${hint ? `<div class="text-[11px] text-zinc-500">${hint}</div>` : ''}</div>${ctl}</div>`;
   const sw = k => `<button class="sw ${C[k] ? 'on' : ''}" role="switch" aria-checked="${C[k]}" onclick="togCfg('${k}')"><i></i></button>`;
@@ -1030,7 +1408,7 @@ function pfSettings() {
 function saveBw(v) { const n = parseFloat(v); C.bw = n > 0 ? toKg(n, C.unit) : 0; saveC(); }
 function setSex(s) { C.sex = s; saveC(); segSet('segSex', s); }
 function setRestPref(v) { C.rest = Number(v); saveC(); segSet('segRest', C.rest); if (!TM.run) tmSet(C.rest); }
-function togCfg(k) { C[k] = !C[k]; saveC(); pfSettings(); }
+function togCfg(k) { C[k] = !C[k]; saveC(); pfSettings(); tmRender(); }
 
 function pfThemes() {
   const prem = isPrem();
@@ -1053,22 +1431,22 @@ function pfData() {
     <p class="text-[11px] text-zinc-600 mt-3 leading-snug">Everything is stored on this device only. Resetting keeps your Premium status.</p></div>`;
 }
 function exportData() {
-  const t = JSON.stringify({ cfg: C, logs: logs() });
+  const t = JSON.stringify({ cfg: C, logs: logs(), badges: store.get('bf_badges', {}) });
   try { navigator.clipboard.writeText(t).then(() => toast('📋 Backup copied'), () => toast('Copy failed')); } catch (e) { toast('Copy is not supported here'); }
 }
 function resetData() {
-  if (!confirm('Delete all workouts, PRs and settings on this device? Premium status is kept.')) return;
-  ['bf_logs', 'bf_session', 'bf_cfg', 'bf_pr', 'bf_mig2', 'bf_unit', 'bf_sex', 'bf_bar', 'bf_bw', 'bf_tab'].forEach(store.del);
+  if (!confirm('Delete all workouts, PRs, badges, XP and settings on this device? Premium status is kept.')) return;
+  ['bf_logs', 'bf_session', 'bf_cfg', 'bf_badges', 'bf_pr', 'bf_mig2', 'bf_unit', 'bf_sex', 'bf_bar', 'bf_bw', 'bf_tab'].forEach(store.del);
   location.reload();
 }
 
 /* ================= PAYWALL / WHOP ================= */
-function openPaywall(reason) {
+function openPaywall(reason, name) {
   if (isPrem()) { toast('👑 You already have Premium'); return; }
   const msgs = {
-    calc: "You've used your 3 free calculations for today.",
+    tab: (name || 'This feature') + ' is a Premium feature. The plate calculator and rest timer stay free.',
     theme: 'Premium themes are part of Elite.',
-    upgrade: 'Go Elite and remove every limit.'
+    upgrade: 'The plate calculator and rest timer stay free. Unlock everything else.'
   };
   $('pwMsg').textContent = msgs[reason] || msgs.upgrade;
   $('pkMsg').textContent = ''; $('pkIn').value = '';
@@ -1096,12 +1474,14 @@ function restore() {
 
 /* ================= INIT ================= */
 migrate();
+syncBadges();
 if (!THEMES[C.theme] || (!THEMES[C.theme].free && !isPrem())) C.theme = 'onyx';
-if (!(C.tab >= 0 && C.tab <= 4)) C.tab = 0;
+if (!(C.tab >= 0 && C.tab <= 4) || (C.tab > 0 && !isPrem())) C.tab = 0;
 applyTheme(C.theme);
 mountNav();
 mountSeg('segUnit', [['lb', 'LBS'], ['kg', 'KG']], 'setUnit');
 mountSeg('segRange', [[30, '30D'], [90, '90D'], [0, 'All']], 'setRange');
+mountSeg('segPr', [['lb', 'LBS'], ['kg', 'KG']], 'setPrUnit');
 segSet('segUnit', C.unit);
 segSet('segRange', S.range);
 uiUnit();
